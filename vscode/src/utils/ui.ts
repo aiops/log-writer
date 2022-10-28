@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
-// import { FEEDBACK } from './api';
+import { FEEDBACK } from './api';
 import axios from 'axios';
+import { TokenManager } from '../TokenManager';
 
 const MARKETPLACE_URL = 'https://marketplace.visualstudio.com/items?itemname=mintlify.document';
 
@@ -35,19 +36,28 @@ export const configUserSettings = () => {
 };
 
 
-// export const askForFeedbackNotification = async (feedbackId: string): Promise<number | null> => {
-// 	const feedbackOption = await vscode.window.showInformationMessage('Are the results useful?', '👍 Yes', '👎 No');
-// 	if (feedbackOption == null) {return null;}
+export const askForFeedbackNotification = async (feedbackId: string): Promise<boolean | null> => {
+	const feedbackOption = await vscode.window.showInformationMessage('Are the results useful?', '👍 Yes', '👎 No');
+	if (feedbackOption == null) {return null;}
 
-// 	const feedbackScore = feedbackOption === '👍 Yes' ? 1 : -1;
+	const feedbackScore = feedbackOption === '👍 Yes' ? true : false;
 
-// 	axios.post(FEEDBACK, {
-// 		id: feedbackId,
-// 		feedback: feedbackScore,
-// 	});
+	axios.post(FEEDBACK, {
+		autoLogId: feedbackId,
+		isHelpful: feedbackScore,
+	},
+	{
+		headers: 
+		{
+		// eslint-disable-next-line @typescript-eslint/naming-convention
+		"Content-Type": "application/json",
+		// eslint-disable-next-line @typescript-eslint/naming-convention
+		"Authorization": "Bearer " + TokenManager.getToken(),
+		}}
+		);
 
-// 	return feedbackScore;
-// };
+	return feedbackScore;
+};
 
 const generateTweetIntentUrl = () => {
 	const text = encodeURI('Check out Doc Writer for VSCode by @mintlify. It just generated documentation for me in a second');

@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import axios, { AxiosError } from 'axios';
 import { SidebarProvider } from './SidebarProvider';
 import { TokenManager } from "./TokenManager";
-import { changeProgressColor, removeProgressColor, shareNotification } from './utils/ui';
+import { changeProgressColor, removeProgressColor, shareNotification, askForFeedbackNotification } from './utils/ui';
 import { getDocStyleConfig, getCustomConfig, getHighlightedText, getWidth } from './utils/utils';
 import { hotkeyConfigProperty, KEYBINDING_DISPLAY } from './constants';
 import { LOGS_WRITE } from './utils/api';
@@ -70,12 +70,12 @@ export function activate(context: vscode.ExtensionContext) {
 	}, async () => {
 			const docsPromise = new Promise(async (resolve, _) => {
 				try {
-					const { data } = await axios.post(LOGS_WRITE,
+					const { data: {listAutoLogs, autoLogId, shouldShowFeedback} } = await axios.post(LOGS_WRITE,
 						{
 							"languageId": languageId,
 							"fileName": fileName,
 							"source": "vscode",
-							"context": getText()
+							"context": getText(),
 						},
 						{
 							headers: 
@@ -87,12 +87,18 @@ export function activate(context: vscode.ExtensionContext) {
 							}
 						});
 					vscode.commands.executeCommand('autologger.insert', {
-						position: data['listAutoLogs'][0]['position'],
-						content: data['listAutoLogs'][0]['logMessage'],
+						position: listAutoLogs[0]['position'],
+						content: listAutoLogs[0]['logMessage'],
 						selection: selection
 					});
+
 					resolve('Completed generating');
 					removeProgressColor();
+
+					if (shouldShowFeedback) {
+						const feedbackScore = await askForFeedbackNotification(autoLogId);
+					}
+				
 				} catch (err: AxiosError | any) {
 				
 					vscode.window.showErrorMessage(JSON.stringify(err));

@@ -6484,12 +6484,13 @@ exports.KEYBINDING_DISPLAY = KEYBINDING_DISPLAY;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.LOGS_WRITE = exports.LOGSIGHTBASE = exports.USERID = exports.ISDEV = void 0;
+exports.FEEDBACK = exports.LOGS_WRITE = exports.LOGSIGHTBASE = exports.USERID = exports.ISDEV = void 0;
 const vscode = __webpack_require__(/*! vscode */ "vscode");
 exports.ISDEV = 'true';
 exports.USERID = vscode.env.machineId;
 exports.LOGSIGHTBASE = exports.ISDEV ? 'http://localhost:8080' : 'https://logsight.ai';
 exports.LOGS_WRITE = exports.LOGSIGHTBASE + '/api/v1/logs/autolog';
+exports.FEEDBACK = exports.LOGSIGHTBASE + '/api/v1/logs/autolog/feedback';
 
 
 /***/ }),
@@ -6526,8 +6527,11 @@ exports.getNonce = getNonce;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.shareNotification = exports.configUserSettings = exports.removeProgressColor = exports.changeProgressColor = void 0;
+exports.shareNotification = exports.askForFeedbackNotification = exports.configUserSettings = exports.removeProgressColor = exports.changeProgressColor = void 0;
 const vscode = __webpack_require__(/*! vscode */ "vscode");
+const api_1 = __webpack_require__(/*! ./api */ "./src/utils/api.ts");
+const axios_1 = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+const TokenManager_1 = __webpack_require__(/*! ../TokenManager */ "./src/TokenManager.ts");
 const MARKETPLACE_URL = 'https://marketplace.visualstudio.com/items?itemname=mintlify.document';
 const changeProgressColor = () => {
     const workbenchConfig = vscode.workspace.getConfiguration('workbench');
@@ -6559,16 +6563,26 @@ const configUserSettings = () => {
     (0, exports.removeProgressColor)();
 };
 exports.configUserSettings = configUserSettings;
-// export const askForFeedbackNotification = async (feedbackId: string): Promise<number | null> => {
-// 	const feedbackOption = await vscode.window.showInformationMessage('Are the results useful?', '👍 Yes', '👎 No');
-// 	if (feedbackOption == null) {return null;}
-// 	const feedbackScore = feedbackOption === '👍 Yes' ? 1 : -1;
-// 	axios.post(FEEDBACK, {
-// 		id: feedbackId,
-// 		feedback: feedbackScore,
-// 	});
-// 	return feedbackScore;
-// };
+const askForFeedbackNotification = async (feedbackId) => {
+    const feedbackOption = await vscode.window.showInformationMessage('Are the results useful?', '👍 Yes', '👎 No');
+    if (feedbackOption == null) {
+        return null;
+    }
+    const feedbackScore = feedbackOption === '👍 Yes' ? true : false;
+    axios_1.default.post(api_1.FEEDBACK, {
+        autoLogId: feedbackId,
+        isHelpful: feedbackScore,
+    }, {
+        headers: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            "Content-Type": "application/json",
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            "Authorization": "Bearer " + TokenManager_1.TokenManager.getToken(),
+        }
+    });
+    return feedbackScore;
+};
+exports.askForFeedbackNotification = askForFeedbackNotification;
 const generateTweetIntentUrl = () => {
     const text = encodeURI('Check out Doc Writer for VSCode by @mintlify. It just generated documentation for me in a second');
     const url = MARKETPLACE_URL;
@@ -6895,7 +6909,7 @@ function activate(context) {
     // GETTING PREDICTIONS
     const write = vscode.commands.registerCommand('autologger.write', async () => {
         if (!TokenManager_1.TokenManager.getToken()) {
-            vscode.window.showInformationMessage("Please login at logsight.ai Autologger extension and try again");
+            vscode.window.showInformationMessage("Please login at logsight.ai AutoLogger extension and try again");
             return;
         }
         (0, ui_1.changeProgressColor)();
@@ -6927,15 +6941,15 @@ function activate(context) {
         }
         vscode.window.withProgress({
             location: vscode.ProgressLocation.Notification,
-            title: 'Generating logs',
+            title: 'Generating logging statements',
         }, async () => {
             const docsPromise = new Promise(async (resolve, _) => {
                 try {
-                    const { data } = await axios_1.default.post(api_1.LOGS_WRITE, {
+                    const { data: { listAutoLogs, autoLogId, shouldShowFeedback } } = await axios_1.default.post(api_1.LOGS_WRITE, {
                         "languageId": languageId,
                         "fileName": fileName,
                         "source": "vscode",
-                        "context": getText()
+                        "context": getText(),
                     }, {
                         headers: {
                             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -6945,12 +6959,15 @@ function activate(context) {
                         }
                     });
                     vscode.commands.executeCommand('autologger.insert', {
-                        position: data['listAutoLogs'][0]['position'],
-                        content: data['listAutoLogs'][0]['logMessage'],
+                        position: listAutoLogs[0]['position'],
+                        content: listAutoLogs[0]['logMessage'],
                         selection: selection
                     });
                     resolve('Completed generating');
                     (0, ui_1.removeProgressColor)();
+                    if (shouldShowFeedback) {
+                        const feedbackScore = await (0, ui_1.askForFeedbackNotification)(autoLogId);
+                    }
                 }
                 catch (err) {
                     vscode.window.showErrorMessage(JSON.stringify(err));
