@@ -1,71 +1,36 @@
-# autologger README
+# :page_facing_up: logsight.ai AutoLogger
 
-This is the README for your extension "autologger". After writing up a brief description, we recommend including the following sections.
 
-## Features
+..  image:: https://img.shields.io/twitter/follow/logsight.svg?label=logsight&style=flat&logo=twitter&logoColor=4FADFF
+    :target: https://twitter.com/logsight
+    :alt: logsight.ai on Twitter
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+.. image:: https://img.shields.io/github/stars/aiops/auto-logging?style=social
+    :target: https://github.com/aiops/auto-logging
+    :alt: logsight.ai AutoLogger on GitHub
+    
+#### INITIAL COMMIT COMING SOON 
+A tool that automates where and what to log to speed up and boost troubleshooting!
 
-For example if there is an image subfolder under your extension project workspace:
+## Auto-Logging and Log Coverage
+Let's jump straight into a practical explanation of the problem and a probable solution
 
-\!\[feature X\]\(images/feature-x.png\)
+### The state today
+The code in the figure below represents a simple function that sends messages to a Kafka topic. The code is logically well-covered but has not implemented logging practices. When the service containing this function is deployed, if an error occurs in this function, there is almost no possibility of tracking down the reason for it. The developer needs to spend a long cycle of debugging (assuming the code is part of a large microservices-based architecture), which involves improving the logging, searching, checking manually set rules, etc.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+![i](https://user-images.githubusercontent.com/22328259/177746383-72ddd2d8-1f42-4345-bd91-5bbd1aae68fe.png)
 
-## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+### Your Auto-Logger
+The code below represents, how the auto-logging AI tool generates the logging statements for the developer. The developer does not need to think about the logging, they focus only coding that produces business value. In the example, the first log line(in red) is not needed, while the next three (in green) need to added for a proper logging to be ensured.
 
-## Extension Settings
+![i1](https://user-images.githubusercontent.com/22328259/177746405-37acb3f1-031b-4441-bc38-c4fb326f4228.png)
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+Moreover, the tool summarizes the insights/recommends/changes in a report that provides the general log coverage as well as other useful KPIs.
+The technology behind is a mixture of Abstract Syntax Trees for code parsing, feature engineering with Deep Neural Networks, and wrappers around to make everything easy to use. The tool could be well integrated into your favorite IDE and CI/CD frameworks.
 
-For example:
+![i2](https://user-images.githubusercontent.com/22328259/177746432-4bb93580-c145-47ea-ac6c-3655399cd170.png)
 
-This extension contributes the following settings:
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+### Get notified when Beta version is released!
+If this sounds interesting to you, **star** the project and you will be notified once is ready.
