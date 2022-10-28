@@ -1,6 +1,6 @@
 {
   "name": "autologger",
-  "displayName": "logsight.ai Autologger",
+  "displayName": "logsight.ai AutoLogger",
   "description": "",
   "version": "0.0.1",
   "engines": {
@@ -19,7 +19,7 @@
       "activitybar": [
         {
           "id": "autologger-sidebar-view",
-          "title": "Autologger",
+          "title": "AutoLogger",
           "icon": "media/favicon.png"
         }
       ]
@@ -31,7 +31,7 @@
           "id": "autologger-sidebar",
           "name": "",
           "icon": "media/favicon.png",
-          "contextualTitle": "logsight.ai Autologger"
+          "contextualTitle": "logsight.ai AutoLogger"
         }
       ]
     },
@@ -46,7 +46,7 @@
     "commands": [
       {
         "command": "autologger.write",
-        "title": "Generate logs"
+        "title": "Generate logging statements"
       }
     ]
   },

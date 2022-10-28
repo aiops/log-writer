@@ -28,7 +28,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const write = vscode.commands.registerCommand('autologger.write', async () => {
 		if (!TokenManager.getToken()){
-			vscode.window.showInformationMessage("Please login at logsight.ai Autologger extension and try again");
+			vscode.window.showInformationMessage("Please login at logsight.ai AutoLogger extension and try again");
 			return;
 		}
 
@@ -66,7 +66,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 		vscode.window.withProgress({
 	location: vscode.ProgressLocation.Notification,
-	title: 'Generating logs',
+	title: 'Generating logging statements',
 	}, async () => {
 			const docsPromise = new Promise(async (resolve, _) => {
 				try {
