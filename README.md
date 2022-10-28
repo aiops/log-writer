@@ -1,13 +1,7 @@
 # :page_facing_up: logsight.ai AutoLogger
 
+[![GitHub Stars](https://img.shields.io/github/stars/aiops/auto-logging?style=social)](https://github.com/aiops/auto-logging) [![Twitter](https://img.shields.io/twitter/follow/logsight.svg?label=logsight&style=flat&logo=twitter&logoColor=4FADFF)](https://twitter.com/logsight)
 
-..  image:: https://img.shields.io/twitter/follow/logsight.svg?label=logsight&style=flat&logo=twitter&logoColor=4FADFF
-    :target: https://twitter.com/logsight
-    :alt: logsight.ai on Twitter
-
-.. image:: https://img.shields.io/github/stars/aiops/auto-logging?style=social
-    :target: https://github.com/aiops/auto-logging
-    :alt: logsight.ai AutoLogger on GitHub
     
 #### INITIAL COMMIT COMING SOON 
 A tool that automates where and what to log to speed up and boost troubleshooting!
