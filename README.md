@@ -4,9 +4,14 @@
 
 You write logs for later debugging, but sometimes forgot to add them in the right place? We know that writing logs sucks. Let logsight.ai take care of it. Just highlight the code file, execute the command, and see the magic.
     
-#### Initial release coming soon. Finishing up work on the vscode extension. 
+### Initial release coming soon. Finishing up work on the vscode extension. 
 A tool that automates where to log to speed up and boost troubleshooting!
 
 
-#### Get notified when first version of the AutoLogger is released!
+### Get notified when first version of the AutoLogger is released!
 If this sounds interesting to you, **star** the project.
+
+
+### :rotating_light: Disclaimer
+
+We never store your code, but your code does leave your machine.
