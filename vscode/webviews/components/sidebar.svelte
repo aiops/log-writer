@@ -104,7 +104,7 @@
 </style>
 
 
-<!-- <img class="center" src="https://logsight.ai/assets/img/logo-logsight.svg" alt="logsight.ai logo"> -->
+<img class="center" src="https://logsight.ai/assets/img/logo-logsight.svg" alt="logsight.ai logo">
 
 
 {#if showLogin==true && showLogin!=null}

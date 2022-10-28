@@ -22,6 +22,14 @@ var app = (function () {
     function safe_not_equal(a, b) {
         return a != a ? b == b : a !== b || ((a && typeof a === 'object') || typeof a === 'function');
     }
+    let src_url_equal_anchor;
+    function src_url_equal(element_src, url) {
+        if (!src_url_equal_anchor) {
+            src_url_equal_anchor = document.createElement('a');
+        }
+        src_url_equal_anchor.href = url;
+        return element_src === src_url_equal_anchor.href;
+    }
     function is_empty(obj) {
         return Object.keys(obj).length === 0;
     }
@@ -441,39 +449,39 @@ var app = (function () {
     			a.textContent = "New to logsight.ai?";
     			attr_dev(label0, "class", "form__group__label svelte-1m2a6h4");
     			attr_dev(label0, "for", "emailAddress");
-    			add_location(label0, file, 113, 2, 2291);
+    			add_location(label0, file, 113, 2, 2282);
     			attr_dev(input0, "class", "form__group__input svelte-1m2a6h4");
     			attr_dev(input0, "type", "email");
     			attr_dev(input0, "id", "emailAddress");
     			input0.required = true;
-    			add_location(input0, file, 114, 2, 2361);
+    			add_location(input0, file, 114, 2, 2352);
     			attr_dev(div0, "class", "form__group svelte-1m2a6h4");
-    			add_location(div0, file, 112, 1, 2263);
+    			add_location(div0, file, 112, 1, 2254);
     			attr_dev(label1, "class", "form__group__label svelte-1m2a6h4");
     			attr_dev(label1, "for", "password");
-    			add_location(label1, file, 117, 2, 2531);
+    			add_location(label1, file, 117, 2, 2522);
     			attr_dev(input1, "class", "form__group__input svelte-1m2a6h4");
     			attr_dev(input1, "type", "password");
     			attr_dev(input1, "id", "password");
     			input1.required = true;
-    			add_location(input1, file, 118, 2, 2599);
+    			add_location(input1, file, 118, 2, 2590);
     			attr_dev(div1, "class", "form__group svelte-1m2a6h4");
-    			add_location(div1, file, 116, 1, 2503);
+    			add_location(div1, file, 116, 1, 2494);
     			attr_dev(input2, "class", "form__group__checkbox svelte-1m2a6h4");
     			attr_dev(input2, "type", "checkbox");
     			attr_dev(input2, "id", "showPassword");
-    			add_location(input2, file, 121, 2, 2779);
+    			add_location(input2, file, 121, 2, 2770);
     			attr_dev(label2, "class", "form__group__label svelte-1m2a6h4");
     			attr_dev(label2, "for", "showPassword");
-    			add_location(label2, file, 122, 2, 2882);
+    			add_location(label2, file, 122, 2, 2873);
     			attr_dev(div2, "class", "form__group form__group--check svelte-1m2a6h4");
-    			add_location(div2, file, 120, 1, 2732);
+    			add_location(div2, file, 120, 1, 2723);
     			attr_dev(button, "type", "submit");
-    			add_location(button, file, 124, 1, 2966);
+    			add_location(button, file, 124, 1, 2957);
     			attr_dev(form, "class", "form");
-    			add_location(form, file, 111, 0, 2207);
+    			add_location(form, file, 111, 0, 2198);
     			attr_dev(a, "href", "https://logsight.ai/auth/register");
-    			add_location(a, file, 127, 0, 3012);
+    			add_location(a, file, 127, 0, 3003);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, form, anchor);
@@ -555,9 +563,9 @@ var app = (function () {
     			button = element("button");
     			button.textContent = "Logout";
     			attr_dev(button, "type", "submit");
-    			add_location(button, file, 132, 1, 3186);
+    			add_location(button, file, 132, 1, 3177);
     			attr_dev(form, "class", "form");
-    			add_location(form, file, 131, 0, 3129);
+    			add_location(form, file, 131, 0, 3120);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, form, anchor);
@@ -588,24 +596,35 @@ var app = (function () {
     }
 
     function create_fragment(ctx) {
-    	let t;
+    	let img;
+    	let img_src_value;
+    	let t0;
+    	let t1;
     	let if_block1_anchor;
     	let if_block0 = /*showLogin*/ ctx[0] == true && /*showLogin*/ ctx[0] != null && create_if_block_1(ctx);
     	let if_block1 = /*showLogin*/ ctx[0] == false && /*showLogin*/ ctx[0] != null && create_if_block(ctx);
 
     	const block = {
     		c: function create() {
+    			img = element("img");
+    			t0 = space();
     			if (if_block0) if_block0.c();
-    			t = space();
+    			t1 = space();
     			if (if_block1) if_block1.c();
     			if_block1_anchor = empty();
+    			attr_dev(img, "class", "center svelte-1m2a6h4");
+    			if (!src_url_equal(img.src, img_src_value = "https://logsight.ai/assets/img/logo-logsight.svg")) attr_dev(img, "src", img_src_value);
+    			attr_dev(img, "alt", "logsight.ai logo");
+    			add_location(img, file, 106, 0, 2055);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
+    			insert_dev(target, img, anchor);
+    			insert_dev(target, t0, anchor);
     			if (if_block0) if_block0.m(target, anchor);
-    			insert_dev(target, t, anchor);
+    			insert_dev(target, t1, anchor);
     			if (if_block1) if_block1.m(target, anchor);
     			insert_dev(target, if_block1_anchor, anchor);
     		},
@@ -616,7 +635,7 @@ var app = (function () {
     				} else {
     					if_block0 = create_if_block_1(ctx);
     					if_block0.c();
-    					if_block0.m(t.parentNode, t);
+    					if_block0.m(t1.parentNode, t1);
     				}
     			} else if (if_block0) {
     				if_block0.d(1);
@@ -639,8 +658,10 @@ var app = (function () {
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
+    			if (detaching) detach_dev(img);
+    			if (detaching) detach_dev(t0);
     			if (if_block0) if_block0.d(detaching);
-    			if (detaching) detach_dev(t);
+    			if (detaching) detach_dev(t1);
     			if (if_block1) if_block1.d(detaching);
     			if (detaching) detach_dev(if_block1_anchor);
     		}
