@@ -6924,20 +6924,9 @@ function activate(context) {
         let line = null;
         // Used for cursor placement
         const startLine = selection.start.line;
-        if (!highlighted) {
-            (0, ui_1.removeProgressColor)();
-            let document = editor.document;
-            let curPos = editor.selection.active;
-            location = document.offsetAt(curPos);
-            line = document.lineAt(curPos);
-            if (line.isEmptyOrWhitespace) {
-                vscode.window.showErrorMessage(`Please select a line with code and enter ${(0, constants_1.KEYBINDING_DISPLAY)()} again`);
-                return;
-            }
-            if (!LANGUAGES_SUPPORT.includes(languageId)) {
-                vscode.window.showErrorMessage(`Please select code and enter ${(0, constants_1.KEYBINDING_DISPLAY)()} again`);
-                return;
-            }
+        if (!LANGUAGES_SUPPORT.includes(languageId)) {
+            vscode.window.showErrorMessage(`Please select code and enter ${(0, constants_1.KEYBINDING_DISPLAY)()} again`);
+            return;
         }
         vscode.window.withProgress({
             location: vscode.ProgressLocation.Notification,
@@ -6946,10 +6935,10 @@ function activate(context) {
             const docsPromise = new Promise(async (resolve, _) => {
                 try {
                     const { data: { listAutoLogs, autoLogId, shouldShowFeedback } } = await axios_1.default.post(api_1.LOGS_WRITE, {
-                        "languageId": languageId,
+                        "language": languageId,
                         "fileName": fileName,
                         "source": "vscode",
-                        "context": getText(),
+                        "code": getText(),
                     }, {
                         headers: {
                             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -6959,9 +6948,7 @@ function activate(context) {
                         }
                     });
                     vscode.commands.executeCommand('autologger.insert', {
-                        position: listAutoLogs[0]['position'],
-                        content: listAutoLogs[0]['logMessage'],
-                        selection: selection
+                        listAutoLogs: listAutoLogs
                     });
                     resolve('Completed generating');
                     (0, ui_1.removeProgressColor)();
@@ -6978,33 +6965,16 @@ function activate(context) {
             await docsPromise;
         });
     });
-    const insert = vscode.commands.registerCommand('autologger.insert', async ({ position, content, selection }) => {
+    const insert = vscode.commands.registerCommand('autologger.insert', async ({ listAutoLogs }) => {
+        console.log(listAutoLogs);
         const editor = vscode.window.activeTextEditor;
         if (editor == null) {
             return;
         }
-        if (position === 'belowStartLine') {
-            const start = selection.start.line;
-            const startLine = editor.document.lineAt(start);
-            const tabbedDocstring = content.split('\n').map((line) => `\t${line}`).join('\n');
-            const snippet = new vscode.SnippetString(`\n${tabbedDocstring}`);
-            editor.insertSnippet(snippet, startLine.range.end);
-        }
-        else if (position === 'above') {
-            const snippet = new vscode.SnippetString(`${content}\n`);
-            let position;
-            if (selection.start.line == selection.end.line && selection.start.character == selection.end.character) {
-                let document = editor.document;
-                const curPos = editor.selection.active;
-                const desiredLine = document.lineAt(curPos);
-                const lineNum = desiredLine.range.start.line;
-                position = new vscode.Position(lineNum, desiredLine.firstNonWhitespaceCharacterIndex);
-            }
-            else {
-                position = selection.start;
-            }
-            console.log(snippet, position);
-            editor.insertSnippet(snippet, position);
+        for (let i = 0; i < listAutoLogs.length; i++) {
+            const snippet = new vscode.SnippetString(`${listAutoLogs[i].logMessage}\n`);
+            let linePos = new vscode.Position(listAutoLogs[i].start_line_number + i, 0);
+            editor.insertSnippet(snippet, linePos);
         }
     });
     context.subscriptions.push(write, insert);
