@@ -104,12 +104,14 @@ export function activate(context: vscode.ExtensionContext) {
 	const insert = vscode.commands.registerCommand('autologger.insert', async (
 		{ listAutoLogs }
 	) => {
-		console.log(listAutoLogs);
-		const editor = vscode.window.activeTextEditor;
-		if (editor == null) { return; }
 		for (let i=0; i< listAutoLogs.length; i++){
-			const snippet = new vscode.SnippetString(`${listAutoLogs[i].logMessage}\n`);
-			let linePos = new vscode.Position(listAutoLogs[i].start_line_number + i, 0);
+			const editor = vscode.window.activeTextEditor;
+			if (editor == null) { return; }
+			const snippet = new vscode.SnippetString(`${listAutoLogs[i].log_message}\n`);
+			let curPos = new vscode.Position(listAutoLogs[i].start_line_number + 1 + i, 0);
+			const desiredLine = editor.document.lineAt(curPos);
+			let linePos = new vscode.Position(listAutoLogs[i].start_line_number + 1 + i, desiredLine.firstNonWhitespaceCharacterIndex);
+			console.log(desiredLine.firstNonWhitespaceCharacterIndex);
 			editor.insertSnippet(snippet, linePos);
 		}
 	});
