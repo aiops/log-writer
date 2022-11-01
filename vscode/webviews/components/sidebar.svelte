@@ -133,3 +133,7 @@
 	<button type="submit">Logout</button>
 </form>
 {/if}
+
+<div class="row-pt-2">
+<a href="https://github.com/aiops/autologger">Join our [community]</a>
+</div>

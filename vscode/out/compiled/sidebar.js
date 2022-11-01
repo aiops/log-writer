@@ -51,9 +51,6 @@ var app = (function () {
     function space() {
         return text(' ');
     }
-    function empty() {
-        return text('');
-    }
     function listen(node, event, handler, options) {
         node.addEventListener(event, handler, options);
         return () => node.removeEventListener(event, handler, options);
@@ -600,7 +597,9 @@ var app = (function () {
     	let img_src_value;
     	let t0;
     	let t1;
-    	let if_block1_anchor;
+    	let t2;
+    	let div;
+    	let a;
     	let if_block0 = /*showLogin*/ ctx[0] == true && /*showLogin*/ ctx[0] != null && create_if_block_1(ctx);
     	let if_block1 = /*showLogin*/ ctx[0] == false && /*showLogin*/ ctx[0] != null && create_if_block(ctx);
 
@@ -611,11 +610,18 @@ var app = (function () {
     			if (if_block0) if_block0.c();
     			t1 = space();
     			if (if_block1) if_block1.c();
-    			if_block1_anchor = empty();
+    			t2 = space();
+    			div = element("div");
+    			a = element("a");
+    			a.textContent = "Join our [community]";
     			attr_dev(img, "class", "center svelte-1m2a6h4");
     			if (!src_url_equal(img.src, img_src_value = "https://logsight.ai/assets/img/logo-logsight.svg")) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "logsight.ai logo");
     			add_location(img, file, 106, 0, 2055);
+    			attr_dev(a, "href", "https://github.com/aiops/autologger");
+    			add_location(a, file, 137, 0, 3253);
+    			attr_dev(div, "class", "row-pt-2");
+    			add_location(div, file, 136, 0, 3230);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -626,7 +632,9 @@ var app = (function () {
     			if (if_block0) if_block0.m(target, anchor);
     			insert_dev(target, t1, anchor);
     			if (if_block1) if_block1.m(target, anchor);
-    			insert_dev(target, if_block1_anchor, anchor);
+    			insert_dev(target, t2, anchor);
+    			insert_dev(target, div, anchor);
+    			append_dev(div, a);
     		},
     		p: function update(ctx, [dirty]) {
     			if (/*showLogin*/ ctx[0] == true && /*showLogin*/ ctx[0] != null) {
@@ -648,7 +656,7 @@ var app = (function () {
     				} else {
     					if_block1 = create_if_block(ctx);
     					if_block1.c();
-    					if_block1.m(if_block1_anchor.parentNode, if_block1_anchor);
+    					if_block1.m(t2.parentNode, t2);
     				}
     			} else if (if_block1) {
     				if_block1.d(1);
@@ -663,7 +671,8 @@ var app = (function () {
     			if (if_block0) if_block0.d(detaching);
     			if (detaching) detach_dev(t1);
     			if (if_block1) if_block1.d(detaching);
-    			if (detaching) detach_dev(if_block1_anchor);
+    			if (detaching) detach_dev(t2);
+    			if (detaching) detach_dev(div);
     		}
     	};
 

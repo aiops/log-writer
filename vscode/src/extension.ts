@@ -3,17 +3,14 @@ import axios, { AxiosError } from 'axios';
 import { SidebarProvider } from './SidebarProvider';
 import { TokenManager } from "./TokenManager";
 import { changeProgressColor, removeProgressColor, shareNotification, askForFeedbackNotification } from './utils/ui';
-import { getDocStyleConfig, getCustomConfig, getHighlightedText, getWidth } from './utils/utils';
-import { hotkeyConfigProperty, KEYBINDING_DISPLAY } from './constants';
+import { KEYBINDING_DISPLAY } from './constants';
 import { LOGS_WRITE } from './utils/api';
 
 
 const LANGUAGES_SUPPORT = ['python'];
-
+const LINE_THRESHOLD = 5;
 
 export function activate(context: vscode.ExtensionContext) {
-
-// SIDEVIEW AUTH
 
 	TokenManager.globalState = context.globalState;
 	const sidebarProvider = new SidebarProvider(context.extensionUri);
@@ -23,8 +20,6 @@ export function activate(context: vscode.ExtensionContext) {
 			sidebarProvider
 		)
 	);
-
-// GETTING PREDICTIONS
 
 	const write = vscode.commands.registerCommand('autologger.write', async () => {
 		if (!TokenManager.getToken()){
@@ -40,14 +35,11 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 
 		const { languageId, getText, fileName } = editor.document;
-
-		const { selection, highlighted } = getHighlightedText(editor);
-		let location: number | null = null;
-		let line: vscode.TextLine | null = null;
-
-		// Used for cursor placement
-		const startLine = selection.start.line;
-
+		if (editor.document.lineCount < LINE_THRESHOLD){
+			vscode.window.showInformationMessage(`Without sufficient code, we can not suggest any logging statements`);
+			removeProgressColor();
+			return;
+		}
 
 		if (!LANGUAGES_SUPPORT.includes(languageId)) {
 			vscode.window.showErrorMessage(`Please select code and enter ${KEYBINDING_DISPLAY()} again`);
@@ -76,23 +68,17 @@ export function activate(context: vscode.ExtensionContext) {
 							"Authorization": "Bearer " + TokenManager.getToken(),
 							}
 						});
-
-				
 					vscode.commands.executeCommand('autologger.insert', {
 						listAutoLogs: listAutoLogs
 					});
-
 					resolve('Completed generating');
 					removeProgressColor();
-
 					if (shouldShowFeedback) {
 						const feedbackScore = await askForFeedbackNotification(autoLogId);
 					}
-				
 				} catch (err: AxiosError | any) {
-				
-					vscode.window.showErrorMessage(JSON.stringify(err));
 					resolve('Error');
+					vscode.window.showErrorMessage("AutoLogger is still under development and has bugs, please report this bug to https://github.com/aiops/autologger");
 					removeProgressColor();
 				}
 			});

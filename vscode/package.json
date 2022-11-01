@@ -1,13 +1,24 @@
 {
   "name": "autologger",
   "displayName": "logsight.ai AutoLogger",
-  "description": "",
+  "description": "AI powered logging statement generator writer for Python and all other languages (soon)",
   "version": "0.0.1",
+  "publisher": "logsight.ai",
+  "license": "Expat",
+  "keywords": [
+    "logs",
+    "python",
+    "observability"
+  ],
+  "repository": {
+    "url": "https://github.com/aiops/autologger"
+  },
   "engines": {
     "vscode": "^1.72.0"
   },
   "categories": [
-    "Other"
+    "Machine Learning",
+    "Programming Languages"
   ],
   "activationEvents": [
     "onView:autologger-sidebar",
@@ -15,6 +26,58 @@
   ],
   "main": "./dist/extension.js",
   "contributes": {
+    "commands": [
+      {
+        "command": "autologger.write",
+        "title": "Generate logging statements"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "autologger.write",
+        "key": "cmd+.",
+        "mac": "cmd+.",
+        "when": "isMac && editorTextFocus && editorLangId =~ /python/ && config.autologger.hotkey.mac == '⌘ + .'"
+      },
+      {
+        "command": "autologger.write",
+        "key": "alt+.",
+        "mac": "alt+.",
+        "when": "isMac && editorTextFocus && editorLangId =~ /python/ && config.autologger.hotkey.mac == '⌥ + .'"
+      },
+      {
+        "command": "autologger.write",
+        "key": "ctrl+.",
+        "mac": "ctrl+.",
+        "when": "isLinux && editorTextFocus && editorLangId =~ /python/ && config.autologger.hotkey.window == 'Ctrl + .'"
+      },
+      {
+        "command": "autologger.write",
+        "key": "alt+.",
+        "mac": "alt+.",
+        "when": "isLinux && editorTextFocus && editorLangId =~ /python/ && config.autologger.hotkey.window == 'Alt + .'"
+      },
+      {
+        "command": "autologger.write",
+        "key": "ctrl+.",
+        "win": "ctrl+.",
+        "when": "isWindows && editorTextFocus && editorLangId =~ /python/ && config.autologger.hotkey.windows == 'Ctrl + .'"
+      },
+      {
+        "command": "autologger.write",
+        "key": "alt+.",
+        "win": "alt+.",
+        "when": "isWindows && editorTextFocus && editorLangId =~ /python/ && config.autologger.hotkey.windows == 'Alt + .'"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "when": "editorTextFocus && editorLangId =~ /python/",
+          "command": "autologger.write"
+        }
+      ]
+    },
     "viewsContainers": {
       "activitybar": [
         {
@@ -35,20 +98,37 @@
         }
       ]
     },
-    "menus": {
-      "editor/context": [
-        {
-          "when": "editorTextFocus && editorLangId =~ /python/",
-          "command": "autologger.write"
+    "configuration": {
+      "title": "Logsight.ai AutoLogger",
+      "properties": {
+        "autologger.hotkey.mac": {
+          "type": "string",
+          "default": "⌘ + .",
+          "enum": [
+            "⌘ + .",
+            "⌥ + ."
+          ],
+          "enumDescriptions": [
+            "Command + .",
+            "Option + ."
+          ],
+          "description": "The hotkey used for generating logs (only for Macs)"
+        },
+        "autologger.hotkey.windows": {
+          "type": "string",
+          "default": "Ctrl + .",
+          "enum": [
+            "Ctrl + .",
+            "Alt + ."
+          ],
+          "enumDescriptions": [
+            "Control + .",
+            "Alt + ."
+          ],
+          "description": "The hotkey used for generating logs (only for Windows/Linux)"
         }
-      ]
-    },
-    "commands": [
-      {
-        "command": "autologger.write",
-        "title": "Generate logging statements"
       }
-    ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",

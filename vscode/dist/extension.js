@@ -6624,93 +6624,6 @@ exports.shareNotification = shareNotification;
 
 /***/ }),
 
-/***/ "./src/utils/utils.ts":
-/*!****************************!*\
-  !*** ./src/utils/utils.ts ***!
-  \****************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getWidth = exports.getCustomConfig = exports.getDate = exports.getDocStyleConfig = exports.getFileExtension = exports.getHighlightedText = void 0;
-const vscode = __webpack_require__(/*! vscode */ "vscode");
-// import { WORKER_STATUS } from './api';
-const getHighlightedText = (editor) => {
-    const { selection } = editor;
-    const highlightRange = new vscode.Range(editor.selection.start, editor.selection.end);
-    const highlighted = editor.document.getText(highlightRange);
-    return { selection, highlighted };
-};
-exports.getHighlightedText = getHighlightedText;
-const getFileExtension = (filename) => {
-    const fileExtensionRegex = /(?:\.([^.]+))?$/;
-    const fileExtension = fileExtensionRegex.exec(filename);
-    if (fileExtension == null || fileExtension.length === 0) {
-        return '';
-    }
-    return fileExtension[1];
-};
-exports.getFileExtension = getFileExtension;
-const getDocStyleConfig = () => {
-    return vscode.workspace.getConfiguration('docwriter').get('style') || 'Auto-detect';
-};
-exports.getDocStyleConfig = getDocStyleConfig;
-const getDate = () => {
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    let mm = today.getMonth() + 1; // Months start at 0!
-    let dd = today.getDate();
-    let formattedMM = mm < 10 ? '0' + mm : mm.toString();
-    let formattedDD = dd < 10 ? '0' + dd : dd.toString();
-    return formattedMM + '/' + formattedDD + '/' + yyyy;
-};
-exports.getDate = getDate;
-const getCustomConfig = () => {
-    return {
-        template: vscode.workspace.getConfiguration('docwriter').get('custom.template'),
-        author: vscode.workspace.getConfiguration('docwriter').get('custom.author'),
-        date: (0, exports.getDate)(),
-        language: vscode.workspace.getConfiguration('docwriter').get('language'),
-    };
-};
-exports.getCustomConfig = getCustomConfig;
-const getWidth = (offset) => {
-    const rulers = vscode.workspace.getConfiguration('editor').get('rulers');
-    const maxWidth = rulers != null && rulers.length > 0 ? rulers[0] : 100;
-    const width = maxWidth - offset;
-    return width;
-};
-exports.getWidth = getWidth;
-const sleep = (ms) => {
-    return new Promise(resolve => setTimeout(resolve, ms));
-};
-// const checkWorkerStatus = async (id: string): Promise<any> => {
-//   const status = await axios.get(WORKER_STATUS(id));
-//   return status.data;
-// };
-// export const monitorWorkerStatus = async (id: string) => {
-//   let workerStatus = null;
-//   let millisecondsPassed = 0;
-//   const intervalMs = 100;
-//   while (workerStatus == null && millisecondsPassed < 25000) {
-//     const status = await checkWorkerStatus(id);
-//     if (status.state === 'completed' && status.data) {
-//       workerStatus = status.data;
-//       break;
-//     }
-//     else if (status.state === 'failed') {
-//       throw new Error('Unable to generate documentation');
-//     }
-//     millisecondsPassed += intervalMs;
-//     await sleep(intervalMs);
-//   }
-//   return workerStatus;
-// };
-
-
-/***/ }),
-
 /***/ "vscode":
 /*!*************************!*\
   !*** external "vscode" ***!
@@ -6897,16 +6810,14 @@ const axios_1 = __webpack_require__(/*! axios */ "./node_modules/axios/index.js"
 const SidebarProvider_1 = __webpack_require__(/*! ./SidebarProvider */ "./src/SidebarProvider.ts");
 const TokenManager_1 = __webpack_require__(/*! ./TokenManager */ "./src/TokenManager.ts");
 const ui_1 = __webpack_require__(/*! ./utils/ui */ "./src/utils/ui.ts");
-const utils_1 = __webpack_require__(/*! ./utils/utils */ "./src/utils/utils.ts");
 const constants_1 = __webpack_require__(/*! ./constants */ "./src/constants.ts");
 const api_1 = __webpack_require__(/*! ./utils/api */ "./src/utils/api.ts");
 const LANGUAGES_SUPPORT = ['python'];
+const LINE_THRESHOLD = 5;
 function activate(context) {
-    // SIDEVIEW AUTH
     TokenManager_1.TokenManager.globalState = context.globalState;
     const sidebarProvider = new SidebarProvider_1.SidebarProvider(context.extensionUri);
     context.subscriptions.push(vscode.window.registerWebviewViewProvider("autologger-sidebar", sidebarProvider));
-    // GETTING PREDICTIONS
     const write = vscode.commands.registerCommand('autologger.write', async () => {
         if (!TokenManager_1.TokenManager.getToken()) {
             vscode.window.showInformationMessage("Please login at logsight.ai AutoLogger extension and try again");
@@ -6919,11 +6830,11 @@ function activate(context) {
             return;
         }
         const { languageId, getText, fileName } = editor.document;
-        const { selection, highlighted } = (0, utils_1.getHighlightedText)(editor);
-        let location = null;
-        let line = null;
-        // Used for cursor placement
-        const startLine = selection.start.line;
+        if (editor.document.lineCount < LINE_THRESHOLD) {
+            vscode.window.showInformationMessage(`Without sufficient code, we can not suggest any logging statements`);
+            (0, ui_1.removeProgressColor)();
+            return;
+        }
         if (!LANGUAGES_SUPPORT.includes(languageId)) {
             vscode.window.showErrorMessage(`Please select code and enter ${(0, constants_1.KEYBINDING_DISPLAY)()} again`);
             return;
@@ -6957,8 +6868,8 @@ function activate(context) {
                     }
                 }
                 catch (err) {
-                    vscode.window.showErrorMessage(JSON.stringify(err));
                     resolve('Error');
+                    vscode.window.showErrorMessage("AutoLogger is still under development and has bugs, please report this bug to https://github.com/aiops/autologger");
                     (0, ui_1.removeProgressColor)();
                 }
             });
