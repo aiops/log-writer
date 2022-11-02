@@ -6315,7 +6315,7 @@ module.exports = {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.SidebarProvider = void 0;
 const vscode = __webpack_require__(/*! vscode */ "vscode");
-const getNonce_1 = __webpack_require__(/*! ./utils/getNonce */ "./src/utils/getNonce.ts");
+const utils_1 = __webpack_require__(/*! ./utils/utils */ "./src/utils/utils.ts");
 const TokenManager_1 = __webpack_require__(/*! ./TokenManager */ "./src/TokenManager.ts");
 class SidebarProvider {
     constructor(_extensionUri) {
@@ -6379,7 +6379,7 @@ class SidebarProvider {
         const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, "out", "compiled/sidebar.js"));
         const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, "out", "compiled/sidebar.css"));
         // Use a nonce to only allow a specific script to be run.
-        const nonce = (0, getNonce_1.getNonce)();
+        const nonce = (0, utils_1.getNonce)();
         return `<!DOCTYPE html>
 			<html lang="en">
 			<head>
@@ -6486,34 +6486,11 @@ exports.KEYBINDING_DISPLAY = KEYBINDING_DISPLAY;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.FEEDBACK = exports.LOGS_WRITE = exports.LOGSIGHTBASE = exports.USERID = exports.ISDEV = void 0;
 const vscode = __webpack_require__(/*! vscode */ "vscode");
-exports.ISDEV = 'true';
+exports.ISDEV = process.env.VSCODE_DEBUG_MODE === 'true';
 exports.USERID = vscode.env.machineId;
 exports.LOGSIGHTBASE = exports.ISDEV ? 'http://localhost:8080' : 'https://logsight.ai';
 exports.LOGS_WRITE = exports.LOGSIGHTBASE + '/api/v1/logs/autolog';
 exports.FEEDBACK = exports.LOGSIGHTBASE + '/api/v1/logs/autolog/feedback';
-
-
-/***/ }),
-
-/***/ "./src/utils/getNonce.ts":
-/*!*******************************!*\
-  !*** ./src/utils/getNonce.ts ***!
-  \*******************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getNonce = void 0;
-function getNonce() {
-    let text = '';
-    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for (let i = 0; i < 32; i++) {
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return text;
-}
-exports.getNonce = getNonce;
 
 
 /***/ }),
@@ -6527,12 +6504,11 @@ exports.getNonce = getNonce;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.shareNotification = exports.askForFeedbackNotification = exports.configUserSettings = exports.removeProgressColor = exports.changeProgressColor = void 0;
+exports.askForFeedbackNotification = exports.removeProgressColor = exports.changeProgressColor = void 0;
 const vscode = __webpack_require__(/*! vscode */ "vscode");
 const api_1 = __webpack_require__(/*! ./api */ "./src/utils/api.ts");
 const axios_1 = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 const TokenManager_1 = __webpack_require__(/*! ../TokenManager */ "./src/TokenManager.ts");
-const MARKETPLACE_URL = 'https://marketplace.visualstudio.com/items?itemname=mintlify.document';
 const changeProgressColor = () => {
     const workbenchConfig = vscode.workspace.getConfiguration('workbench');
     const currentColorScheme = workbenchConfig.get('colorCustomizations');
@@ -6558,11 +6534,6 @@ const removeProgressColor = () => {
     workbenchConfig.update('colorCustomizations', removedScheme, true);
 };
 exports.removeProgressColor = removeProgressColor;
-const configUserSettings = () => {
-    // Remove color scheme in case left over
-    (0, exports.removeProgressColor)();
-};
-exports.configUserSettings = configUserSettings;
 const askForFeedbackNotification = async (feedbackId) => {
     const feedbackOption = await vscode.window.showInformationMessage('Are the results useful?', '👍 Yes', '👎 No');
     if (feedbackOption == null) {
@@ -6583,43 +6554,29 @@ const askForFeedbackNotification = async (feedbackId) => {
     return feedbackScore;
 };
 exports.askForFeedbackNotification = askForFeedbackNotification;
-const generateTweetIntentUrl = () => {
-    const text = encodeURI('Check out Doc Writer for VSCode by @mintlify. It just generated documentation for me in a second');
-    const url = MARKETPLACE_URL;
-    return `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
-};
-const generateFacebookIntentUrl = () => {
-    const url = MARKETPLACE_URL;
-    return `https://www.facebook.com/sharer.php?u=${url}`;
-};
-const generateMailToUrl = () => {
-    const subject = encodeURI('Check out Mintlify Doc Writer');
-    const body = MARKETPLACE_URL;
-    return `mailto:?to=&subject=${subject}&body=${body}`;
-};
-const shareNotification = async () => {
-    const shareOption = await vscode.window.showInformationMessage('Share Doc Writer with your friends', 'Twitter', 'Facebook', 'Email', 'Copy link');
-    switch (shareOption) {
-        case 'Twitter':
-            const tweetUrl = generateTweetIntentUrl();
-            vscode.env.openExternal(vscode.Uri.parse(tweetUrl));
-            return;
-        case 'Facebook':
-            const facebookShareUrl = generateFacebookIntentUrl();
-            vscode.env.openExternal(vscode.Uri.parse(facebookShareUrl));
-        case 'Email':
-            const mailToUrl = generateMailToUrl();
-            vscode.env.openExternal(vscode.Uri.parse(mailToUrl));
-            return;
-        case 'Copy link':
-            await vscode.env.clipboard.writeText(MARKETPLACE_URL);
-            vscode.window.showInformationMessage('Link copied to clipboard');
-            return;
-        default:
-            return;
+
+
+/***/ }),
+
+/***/ "./src/utils/utils.ts":
+/*!****************************!*\
+  !*** ./src/utils/utils.ts ***!
+  \****************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getNonce = void 0;
+function getNonce() {
+    let text = '';
+    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (let i = 0; i < 32; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
     }
-};
-exports.shareNotification = shareNotification;
+    return text;
+}
+exports.getNonce = getNonce;
 
 
 /***/ }),
@@ -6877,16 +6834,15 @@ function activate(context) {
         });
     });
     const insert = vscode.commands.registerCommand('autologger.insert', async ({ listAutoLogs }) => {
+        const editor = vscode.window.activeTextEditor;
+        if (editor == null) {
+            return;
+        }
         for (let i = 0; i < listAutoLogs.length; i++) {
-            const editor = vscode.window.activeTextEditor;
-            if (editor == null) {
-                return;
-            }
             const snippet = new vscode.SnippetString(`${listAutoLogs[i].log_message}\n`);
-            let curPos = new vscode.Position(listAutoLogs[i].start_line_number + 1 + i, 0);
+            let curPos = new vscode.Position(listAutoLogs[i].start_line_number + 1, 0);
             const desiredLine = editor.document.lineAt(curPos);
-            let linePos = new vscode.Position(listAutoLogs[i].start_line_number + 1 + i, desiredLine.firstNonWhitespaceCharacterIndex);
-            console.log(desiredLine.firstNonWhitespaceCharacterIndex);
+            let linePos = new vscode.Position(listAutoLogs[i].start_line_number + 1 + i, 0);
             editor.insertSnippet(snippet, linePos);
         }
     });

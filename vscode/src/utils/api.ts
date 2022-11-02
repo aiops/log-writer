@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-export const ISDEV = 'true';
+export const ISDEV = process.env.VSCODE_DEBUG_MODE === 'true';
 export const USERID = vscode.env.machineId;
 
 export const LOGSIGHTBASE = ISDEV ? 'http://localhost:8080' : 'https://logsight.ai';

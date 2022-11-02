@@ -6,4 +6,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
-- Initial release
+## [1.0.0] - 05.11.2022
+### Added
+- Autologging enabled for VSCode 
+- Enabling logging recommendations for PYTHON
+
+### Changed
+- It is an initial release version.
+
+### Removed
+- It is an initial release version.

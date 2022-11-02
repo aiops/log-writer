@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import axios, { AxiosError } from 'axios';
 import { SidebarProvider } from './SidebarProvider';
 import { TokenManager } from "./TokenManager";
-import { changeProgressColor, removeProgressColor, shareNotification, askForFeedbackNotification } from './utils/ui';
+import { changeProgressColor, removeProgressColor, askForFeedbackNotification } from './utils/ui';
 import { KEYBINDING_DISPLAY } from './constants';
 import { LOGS_WRITE } from './utils/api';
 
@@ -90,14 +90,13 @@ export function activate(context: vscode.ExtensionContext) {
 	const insert = vscode.commands.registerCommand('autologger.insert', async (
 		{ listAutoLogs }
 	) => {
+		const editor = vscode.window.activeTextEditor;
+		if (editor == null) { return; }
 		for (let i=0; i< listAutoLogs.length; i++){
-			const editor = vscode.window.activeTextEditor;
-			if (editor == null) { return; }
 			const snippet = new vscode.SnippetString(`${listAutoLogs[i].log_message}\n`);
-			let curPos = new vscode.Position(listAutoLogs[i].start_line_number + 1 + i, 0);
+			let curPos = new vscode.Position(listAutoLogs[i].start_line_number + 1, 0);
 			const desiredLine = editor.document.lineAt(curPos);
-			let linePos = new vscode.Position(listAutoLogs[i].start_line_number + 1 + i, desiredLine.firstNonWhitespaceCharacterIndex);
-			console.log(desiredLine.firstNonWhitespaceCharacterIndex);
+			let linePos = new vscode.Position(listAutoLogs[i].start_line_number + 1 + i, 0);
 			editor.insertSnippet(snippet, linePos);
 		}
 	});
