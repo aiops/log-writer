@@ -16,12 +16,12 @@ export function activate(context: vscode.ExtensionContext) {
 	const sidebarProvider = new SidebarProvider(context.extensionUri);
 	context.subscriptions.push(
 		vscode.window.registerWebviewViewProvider(
-			"autologger-sidebar",
+			"log-writer-sidebar",
 			sidebarProvider
 		)
 	);
 
-	const write = vscode.commands.registerCommand('autologger.write', async () => {
+	const write = vscode.commands.registerCommand('log-writer.write', async () => {
 		if (!TokenManager.getToken()){
 			vscode.window.showInformationMessage("Please login at logsight.ai AutoLogger extension and try again");
 			return;
@@ -68,7 +68,7 @@ export function activate(context: vscode.ExtensionContext) {
 							"Authorization": "Bearer " + TokenManager.getToken(),
 							}
 						});
-					vscode.commands.executeCommand('autologger.insert', {
+					vscode.commands.executeCommand('log-writer.insert', {
 						listAutoLogs: listAutoLogs
 					});
 					resolve('Completed generating');
@@ -87,7 +87,7 @@ export function activate(context: vscode.ExtensionContext) {
 		});
 	});
 
-	const insert = vscode.commands.registerCommand('autologger.insert', async (
+	const insert = vscode.commands.registerCommand('log-writer.insert', async (
 		{ listAutoLogs }
 	) => {
 		const editor = vscode.window.activeTextEditor;

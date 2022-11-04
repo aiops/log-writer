@@ -618,7 +618,7 @@ var app = (function () {
     			if (!src_url_equal(img.src, img_src_value = "https://logsight.ai/assets/img/logo-logsight.svg")) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "logsight.ai logo");
     			add_location(img, file, 106, 0, 2055);
-    			attr_dev(a, "href", "https://github.com/aiops/autologger");
+    			attr_dev(a, "href", "https://github.com/aiops/log-writer");
     			add_location(a, file, 137, 0, 3253);
     			attr_dev(div, "class", "row-pt-2");
     			add_location(div, file, 136, 0, 3230);

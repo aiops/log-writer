@@ -1,7 +1,7 @@
 {
-  "name": "autologger",
-  "displayName": "logsight.ai AutoLogger",
-  "description": "AI powered logging statement generator writer for Python and all other languages (soon)",
+  "name": "log-writer",
+  "displayName": "logsight.ai Log Writer",
+  "description": "AI powered logging statement writer for Python and all other languages (soon)",
   "version": "1.0.0",
   "publisher": "logsight.ai",
   "license": "Expat",
@@ -11,7 +11,7 @@
     "observability"
   ],
   "repository": {
-    "url": "https://github.com/aiops/autologger"
+    "url": "https://github.com/aiops/log-writer"
   },
   "engines": {
     "vscode": "^1.72.0"
@@ -21,87 +21,87 @@
     "Programming Languages"
   ],
   "activationEvents": [
-    "onView:autologger-sidebar",
-    "onCommand:autologger.write"
+    "onView:log-writer-sidebar",
+    "onCommand:log-writer.write"
   ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "autologger.write",
+        "command": "log-writer.write",
         "title": "Generate logging statements"
       }
     ],
     "keybindings": [
       {
-        "command": "autologger.write",
+        "command": "log-writer.write",
         "key": "cmd+.",
         "mac": "cmd+.",
-        "when": "isMac && editorTextFocus && editorLangId =~ /python/ && config.autologger.hotkey.mac == '⌘ + .'"
+        "when": "isMac && editorTextFocus && editorLangId =~ /python/ && config.log-writer.hotkey.mac == '⌘ + .'"
       },
       {
-        "command": "autologger.write",
+        "command": "log-writer.write",
         "key": "alt+.",
         "mac": "alt+.",
-        "when": "isMac && editorTextFocus && editorLangId =~ /python/ && config.autologger.hotkey.mac == '⌥ + .'"
+        "when": "isMac && editorTextFocus && editorLangId =~ /python/ && config.log-writer.hotkey.mac == '⌥ + .'"
       },
       {
-        "command": "autologger.write",
+        "command": "log-writer.write",
         "key": "ctrl+.",
         "mac": "ctrl+.",
-        "when": "isLinux && editorTextFocus && editorLangId =~ /python/ && config.autologger.hotkey.window == 'Ctrl + .'"
+        "when": "isLinux && editorTextFocus && editorLangId =~ /python/ && config.log-writer.hotkey.window == 'Ctrl + .'"
       },
       {
-        "command": "autologger.write",
+        "command": "log-writer.write",
         "key": "alt+.",
         "mac": "alt+.",
-        "when": "isLinux && editorTextFocus && editorLangId =~ /python/ && config.autologger.hotkey.window == 'Alt + .'"
+        "when": "isLinux && editorTextFocus && editorLangId =~ /python/ && config.log-writer.hotkey.window == 'Alt + .'"
       },
       {
-        "command": "autologger.write",
+        "command": "log-writer.write",
         "key": "ctrl+.",
         "win": "ctrl+.",
-        "when": "isWindows && editorTextFocus && editorLangId =~ /python/ && config.autologger.hotkey.windows == 'Ctrl + .'"
+        "when": "isWindows && editorTextFocus && editorLangId =~ /python/ && config.log-writer.hotkey.windows == 'Ctrl + .'"
       },
       {
-        "command": "autologger.write",
+        "command": "log-writer.write",
         "key": "alt+.",
         "win": "alt+.",
-        "when": "isWindows && editorTextFocus && editorLangId =~ /python/ && config.autologger.hotkey.windows == 'Alt + .'"
+        "when": "isWindows && editorTextFocus && editorLangId =~ /python/ && config.log-writer.hotkey.windows == 'Alt + .'"
       }
     ],
     "menus": {
       "editor/context": [
         {
           "when": "editorTextFocus && editorLangId =~ /python/",
-          "command": "autologger.write"
+          "command": "log-writer.write"
         }
       ]
     },
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "autologger-sidebar-view",
-          "title": "AutoLogger",
+          "id": "log-writer-sidebar-view",
+          "title": "Log writer",
           "icon": "media/favicon.png"
         }
       ]
     },
     "views": {
-      "autologger-sidebar-view": [
+      "log-writer-sidebar-view": [
         {
           "type": "webview",
-          "id": "autologger-sidebar",
+          "id": "log-writer-sidebar",
           "name": "",
           "icon": "media/favicon.png",
-          "contextualTitle": "logsight.ai AutoLogger"
+          "contextualTitle": "logsight.ai Log writer"
         }
       ]
     },
     "configuration": {
-      "title": "Logsight.ai AutoLogger",
+      "title": "Logsight.ai Log writer",
       "properties": {
-        "autologger.hotkey.mac": {
+        "log-writer.hotkey.mac": {
           "type": "string",
           "default": "⌘ + .",
           "enum": [
@@ -114,7 +114,7 @@
           ],
           "description": "The hotkey used for generating logs (only for Macs)"
         },
-        "autologger.hotkey.windows": {
+        "log-writer.hotkey.windows": {
           "type": "string",
           "default": "Ctrl + .",
           "enum": [

@@ -6774,8 +6774,8 @@ const LINE_THRESHOLD = 5;
 function activate(context) {
     TokenManager_1.TokenManager.globalState = context.globalState;
     const sidebarProvider = new SidebarProvider_1.SidebarProvider(context.extensionUri);
-    context.subscriptions.push(vscode.window.registerWebviewViewProvider("autologger-sidebar", sidebarProvider));
-    const write = vscode.commands.registerCommand('autologger.write', async () => {
+    context.subscriptions.push(vscode.window.registerWebviewViewProvider("log-writer-sidebar", sidebarProvider));
+    const write = vscode.commands.registerCommand('log-writer.write', async () => {
         if (!TokenManager_1.TokenManager.getToken()) {
             vscode.window.showInformationMessage("Please login at logsight.ai AutoLogger extension and try again");
             return;
@@ -6815,7 +6815,7 @@ function activate(context) {
                             "Authorization": "Bearer " + TokenManager_1.TokenManager.getToken(),
                         }
                     });
-                    vscode.commands.executeCommand('autologger.insert', {
+                    vscode.commands.executeCommand('log-writer.insert', {
                         listAutoLogs: listAutoLogs
                     });
                     resolve('Completed generating');
@@ -6833,7 +6833,7 @@ function activate(context) {
             await docsPromise;
         });
     });
-    const insert = vscode.commands.registerCommand('autologger.insert', async ({ listAutoLogs }) => {
+    const insert = vscode.commands.registerCommand('log-writer.insert', async ({ listAutoLogs }) => {
         const editor = vscode.window.activeTextEditor;
         if (editor == null) {
             return;
