@@ -23,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const write = vscode.commands.registerCommand('log-writer.write', async () => {
 		if (!TokenManager.getToken()){
-			vscode.window.showInformationMessage("Please login at logsight.ai AutoLogger extension and try again");
+			vscode.window.showInformationMessage("Please login at logsight.ai Log writer extension and try again");
 			return;
 		}
 
@@ -78,7 +78,7 @@ export function activate(context: vscode.ExtensionContext) {
 					}
 				} catch (err: AxiosError | any) {
 					resolve('Error');
-					vscode.window.showErrorMessage("AutoLogger is still under development and has bugs, please report this bug to https://github.com/aiops/autologger");
+					vscode.window.showErrorMessage("Log writer is still under development and has bugs, please report this bug to https://github.com/aiops/log-writer");
 					removeProgressColor();
 				}
 			});
