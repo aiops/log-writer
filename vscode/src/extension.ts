@@ -52,7 +52,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}, async () => {
 			const docsPromise = new Promise(async (resolve, _) => {
 				try {
-					const { data: {listAutoLogs, autoLogId, shouldShowFeedback} } = await axios.post(LOGS_WRITE,
+					const { data: {listWriteLogs: listWriteLogs, logWriteId, shouldShowFeedback} } = await axios.post(LOGS_WRITE,
 						{
 							"language": languageId,
 							"fileName": fileName,
@@ -69,12 +69,12 @@ export function activate(context: vscode.ExtensionContext) {
 							}
 						});
 					vscode.commands.executeCommand('log-writer.insert', {
-						listAutoLogs: listAutoLogs
+						listWriteLogs: listWriteLogs
 					});
 					resolve('Completed generating');
 					removeProgressColor();
 					if (shouldShowFeedback) {
-						const feedbackScore = await askForFeedbackNotification(autoLogId);
+						const feedbackScore = await askForFeedbackNotification(logWriteId);
 					}
 				} catch (err: AxiosError | any) {
 					resolve('Error');
@@ -88,15 +88,15 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	const insert = vscode.commands.registerCommand('log-writer.insert', async (
-		{ listAutoLogs }
+		{ listWriteLogs }
 	) => {
 		const editor = vscode.window.activeTextEditor;
 		if (editor == null) { return; }
-		for (let i=0; i< listAutoLogs.length; i++){
-			const snippet = new vscode.SnippetString(`${listAutoLogs[i].log_message}\n`);
-			let curPos = new vscode.Position(listAutoLogs[i].start_line_number + 1, 0);
+		for (let i=0; i< listWriteLogs.length; i++){
+			const snippet = new vscode.SnippetString(`${listWriteLogs[i].log_message}\n`);
+			let curPos = new vscode.Position(listWriteLogs[i].start_line_number + 1, 0);
 			const desiredLine = editor.document.lineAt(curPos);
-			let linePos = new vscode.Position(listAutoLogs[i].start_line_number + 1 + i, 0);
+			let linePos = new vscode.Position(listWriteLogs[i].start_line_number + 1 + i, 0);
 			editor.insertSnippet(snippet, linePos);
 		}
 	});

@@ -37,7 +37,7 @@ export const askForFeedbackNotification = async (feedbackId: string): Promise<bo
 	const feedbackScore = feedbackOption === '👍 Yes' ? true : false;
 
 	axios.post(FEEDBACK, {
-		autoLogId: feedbackId,
+		logWriteId: feedbackId,
 		isHelpful: feedbackScore,
 	},
 	{
