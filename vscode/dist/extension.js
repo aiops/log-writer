@@ -6489,8 +6489,8 @@ const vscode = __webpack_require__(/*! vscode */ "vscode");
 exports.ISDEV = process.env.VSCODE_DEBUG_MODE === 'true';
 exports.USERID = vscode.env.machineId;
 exports.LOGSIGHTBASE = exports.ISDEV ? 'http://localhost:8080' : 'https://logsight.ai';
-exports.LOGS_WRITE = exports.LOGSIGHTBASE + '/api/v1/logs/autolog';
-exports.FEEDBACK = exports.LOGSIGHTBASE + '/api/v1/logs/autolog/feedback';
+exports.LOGS_WRITE = exports.LOGSIGHTBASE + '/api/v1/logs/writer';
+exports.FEEDBACK = exports.LOGSIGHTBASE + '/api/v1/logs/writer/feedback';
 
 
 /***/ }),
@@ -6541,7 +6541,7 @@ const askForFeedbackNotification = async (feedbackId) => {
     }
     const feedbackScore = feedbackOption === '👍 Yes' ? true : false;
     axios_1.default.post(api_1.FEEDBACK, {
-        autoLogId: feedbackId,
+        logWriteId: feedbackId,
         isHelpful: feedbackScore,
     }, {
         headers: {
@@ -6802,7 +6802,7 @@ function activate(context) {
         }, async () => {
             const docsPromise = new Promise(async (resolve, _) => {
                 try {
-                    const { data: { listAutoLogs, autoLogId, shouldShowFeedback } } = await axios_1.default.post(api_1.LOGS_WRITE, {
+                    const { data: { listWriteLogs: listWriteLogs, logWriteId: logWriterId, shouldShowFeedback } } = await axios_1.default.post(api_1.LOGS_WRITE, {
                         "language": languageId,
                         "fileName": fileName,
                         "source": "vscode",
@@ -6816,12 +6816,12 @@ function activate(context) {
                         }
                     });
                     vscode.commands.executeCommand('log-writer.insert', {
-                        listAutoLogs: listAutoLogs
+                        listWriteLogs: listWriteLogs
                     });
                     resolve('Completed generating');
                     (0, ui_1.removeProgressColor)();
                     if (shouldShowFeedback) {
-                        const feedbackScore = await (0, ui_1.askForFeedbackNotification)(autoLogId);
+                        const feedbackScore = await (0, ui_1.askForFeedbackNotification)(logWriterId);
                     }
                 }
                 catch (err) {
@@ -6833,16 +6833,16 @@ function activate(context) {
             await docsPromise;
         });
     });
-    const insert = vscode.commands.registerCommand('log-writer.insert', async ({ listAutoLogs }) => {
+    const insert = vscode.commands.registerCommand('log-writer.insert', async ({ listWriteLogs }) => {
         const editor = vscode.window.activeTextEditor;
         if (editor == null) {
             return;
         }
-        for (let i = 0; i < listAutoLogs.length; i++) {
-            const snippet = new vscode.SnippetString(`${listAutoLogs[i].log_message}\n`);
-            let curPos = new vscode.Position(listAutoLogs[i].start_line_number + 1, 0);
+        for (let i = 0; i < listWriteLogs.length; i++) {
+            const snippet = new vscode.SnippetString(`${listWriteLogs[i].log_message}\n`);
+            let curPos = new vscode.Position(listWriteLogs[i].start_line_number + 1, 0);
             const desiredLine = editor.document.lineAt(curPos);
-            let linePos = new vscode.Position(listAutoLogs[i].start_line_number + 1 + i, 0);
+            let linePos = new vscode.Position(listWriteLogs[i].start_line_number + 1 + i, 0);
             editor.insertSnippet(snippet, linePos);
         }
     });

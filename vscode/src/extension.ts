@@ -52,7 +52,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}, async () => {
 			const docsPromise = new Promise(async (resolve, _) => {
 				try {
-					const { data: {listWriteLogs: listWriteLogs, logWriteId, shouldShowFeedback} } = await axios.post(LOGS_WRITE,
+					const { data: {listWriteLogs: listWriteLogs, logWriteId: logWriterId, shouldShowFeedback} } = await axios.post(LOGS_WRITE,
 						{
 							"language": languageId,
 							"fileName": fileName,
@@ -74,7 +74,7 @@ export function activate(context: vscode.ExtensionContext) {
 					resolve('Completed generating');
 					removeProgressColor();
 					if (shouldShowFeedback) {
-						const feedbackScore = await askForFeedbackNotification(logWriteId);
+						const feedbackScore = await askForFeedbackNotification(logWriterId);
 					}
 				} catch (err: AxiosError | any) {
 					resolve('Error');
