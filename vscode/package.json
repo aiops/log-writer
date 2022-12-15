@@ -29,7 +29,7 @@
     "commands": [
       {
         "command": "log-writer.write",
-        "title": "Generate logging statements"
+        "title": "Generate Logs"
       }
     ],
     "keybindings": [
@@ -82,7 +82,7 @@
       "activitybar": [
         {
           "id": "log-writer-sidebar-view",
-          "title": "Log writer",
+          "title": "logsight.ai Log Writer",
           "icon": "media/favicon.png"
         }
       ]
@@ -94,12 +94,12 @@
           "id": "log-writer-sidebar",
           "name": "",
           "icon": "media/favicon.png",
-          "contextualTitle": "logsight.ai Log writer"
+          "contextualTitle": "logsight.ai Log Writer"
         }
       ]
     },
     "configuration": {
-      "title": "Logsight.ai Log writer",
+      "title": "Logsight.ai Log Writer",
       "properties": {
         "log-writer.hotkey.mac": {
           "type": "string",

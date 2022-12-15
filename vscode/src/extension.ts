@@ -78,7 +78,7 @@ export function activate(context: vscode.ExtensionContext) {
 					}
 				} catch (err: AxiosError | any) {
 					resolve('Error');
-					vscode.window.showErrorMessage("Log writer is still under development and has bugs, please report this bug to https://github.com/aiops/log-writer");
+					vscode.window.showErrorMessage(`Log writer is still under development, please report this bug to https://github.com/aiops/log-writer: ${err}`);
 					removeProgressColor();
 				}
 			});
@@ -96,7 +96,7 @@ export function activate(context: vscode.ExtensionContext) {
 			const snippet = new vscode.SnippetString(`${listWriteLogs[i].log_message}\n`);
 			let curPos = new vscode.Position(listWriteLogs[i].start_line_number + 1, 0);
 			const desiredLine = editor.document.lineAt(curPos);
-			let linePos = new vscode.Position(listWriteLogs[i].start_line_number + 1 + i, 0);
+			let linePos = new vscode.Position(listWriteLogs[i].start_line_number + 1 + i, desiredLine.firstNonWhitespaceCharacterIndex);
 			editor.insertSnippet(snippet, linePos);
 		}
 	});

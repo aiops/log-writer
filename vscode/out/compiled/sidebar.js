@@ -613,7 +613,7 @@ var app = (function () {
     			t2 = space();
     			div = element("div");
     			a = element("a");
-    			a.textContent = "Join our [community]";
+    			a.textContent = "Contribute to our [community]";
     			attr_dev(img, "class", "center svelte-1m2a6h4");
     			if (!src_url_equal(img.src, img_src_value = "https://logsight.ai/assets/img/logo-logsight.svg")) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "logsight.ai logo");

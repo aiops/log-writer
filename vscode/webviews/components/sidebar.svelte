@@ -135,5 +135,5 @@
 {/if}
 
 <div class="row-pt-2">
-<a href="https://github.com/aiops/log-writer">Join our [community]</a>
+<a href="https://github.com/aiops/log-writer">Contribute to our [community]</a>
 </div>
